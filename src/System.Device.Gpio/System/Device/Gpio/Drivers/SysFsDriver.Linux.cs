@@ -637,5 +637,32 @@ namespace System.Device.Gpio.Drivers
                 throw new InvalidOperationException("There was an attempt to get a mode to a pin that is not open.");
             }
         }
+
+        /// <summary>
+        /// Sets the active_low state of a pin.
+        /// </summary>
+        /// <param name="pinNumber">The pin number in the driver's logical numbering scheme.</param>
+        /// <param name="IsActiveLow">The active-low state.</param>
+        protected internal void SetActiveLow(int pinNumber, bool IsActiveLow)
+        {
+            string valuePath = $"{GpioBasePath}/gpio{pinNumber + s_pinOffset}/active_low";
+            if (File.Exists(valuePath))
+            {
+                try
+                {
+                    string sysFsValue = Convert.ToString(IsActiveLow ? 1 : 0);
+                    File.WriteAllText(valuePath, sysFsValue);
+                }
+                catch (UnauthorizedAccessException e)
+                {
+                    throw new UnauthorizedAccessException("Setting the active_low state requires root permissions.", e);
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("There was an attempt to write to a pin that is not open.");
+            }
+        }
+
     }
 }

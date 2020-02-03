@@ -69,5 +69,10 @@ namespace System.Device.Gpio.Drivers
         {
             throw new PlatformNotSupportedException();
         }
+
+        protected internal void SetActiveLow(int pinNumber, bool IsActiveLow)
+        {
+            throw new PlatformNotSupportedException();
+        }
     }
 }

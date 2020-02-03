@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.Device.Gpio.Drivers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -199,6 +200,24 @@ namespace System.Device.Gpio
             }
 
             _driver.Write(logicalPinNumber, value);
+        }
+
+        public void SetActiveLow(int pinNumber, bool IsActiveLow)
+        {
+            if (_driver is SysFsDriver sfd)
+            {
+                int logicalPinNumber = GetLogicalPinNumber(pinNumber);
+                if (!_openPins.Contains(logicalPinNumber))
+                {
+                    throw new InvalidOperationException("Can not set active_low for a pin that is not open.");
+                }
+
+                sfd.SetActiveLow(logicalPinNumber, IsActiveLow);
+            }
+            else
+            {
+                throw new NotSupportedException("Only supported by the SysFsDriver!");
+            }
         }
 
         /// <summary>
